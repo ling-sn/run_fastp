@@ -4,7 +4,7 @@ import traceback
 import argparse
 import textwrap
 
-def main(input_dir, email, slurm_acct, walltime, mem, fa):
+def main(input_folder, output_folder, email, slurm_acct, walltime, mem, fa):
     '''
     PURPOSE:
     * Goes into folder containing all raw FASTQs and obtains all sample names.
@@ -18,26 +18,30 @@ def main(input_dir, email, slurm_acct, walltime, mem, fa):
         -> KEH-Rep1-7KO-HEK293T-Cyto-BS_S6
     2. We append the following task to the SBATCH script:
        "python3 run_cutadapt_fastp.py --input raw_fastqs --output trimmed_reads \ 
-       -C 2 -U 12 -S KEH-Rep1-7KO-HEK293T-Cyto-BS_S6"
+        -C 2 -U 12 -S KEH-Rep1-7KO-HEK293T-Cyto-BS_S6"
     '''
     current_path = Path.cwd()
     output = Path("SBATCHSubArr-CUT_FASTP.sbatch")
     
-    start_dir = current_path/"realignments"
+    start_dir = Path(current_path/input_folder)
     if not start_dir.exists():
         raise FileNotFoundError(
-            "Realignments folder doesn't exist. Did you run realignGap.py?"
+            "Please input a folder name that exists"
+            "in your current working directory."
         )
+    
+    ## TODO: Obtain all unique sample names
+    num_jobs = count - 1
     
     ## Create SBATCH file if it doesn't exist
     if not output.exists():
         with open(output, "w") as f:
             template_start = textwrap.dedent(f"""\
                                             #!/usr/bin/env bash
-                                            #SBATCH --job-name=calculate_dr
+                                            #SBATCH --job-name=CUT_FASTP
                                             #SBATCH --mail-user={email}
                                             #SBATCH --mail-type=BEGIN,END,FAIL
-                                            #SBATCH --output=calculate_dr_%u_%A_%a.out
+                                            #SBATCH --output=CUT_FASTP_%u_%A_%a.out
                                             #SBATCH --array=0-{num_jobs}
                                             #SBATCH --account={slurm_acct}
                                             #SBATCH --time={walltime}
@@ -60,12 +64,12 @@ def main(input_dir, email, slurm_acct, walltime, mem, fa):
                                             # This requires a conda environment with samtools and pysam (RNA-STAR)
                                             # 
                                             # To call this script:
-                                            # sbatch run_calculate_dr.sbatch
+                                            # sbatch run_cutadapt_fastp.sbatch
                                             ################################################################################
 
                                             module purge
                                             eval "$(conda shell.bash hook)"
-                                            conda activate ~/miniconda3/envs/RNA-STAR
+                                            conda activate ~/miniconda3/envs/RNA-SEQ
 
                                             declare -a tasks=(
                                             """)
@@ -73,16 +77,16 @@ def main(input_dir, email, slurm_acct, walltime, mem, fa):
             f.write(template_start)
 
     try:
-        for folder in start_dir.iterdir():
+        for file in start_dir.iterdir():
             ## Obtain all subfolder names in each folder within 'realignments'
-            subfolders = [subf.stem for subf in folder.iterdir() if subf.is_dir()]
+            filename = str(file.stem)
+            sample_name = "_".join(filename.split("_")[0:1])
 
             ## Append new tasks to SBATCH
             with open(output, "a") as f:
-                for subf in subfolders:
-                    task = f"\npython3 run_calculate_dr.py --folder_name {folder} --subf_name {subf} --fasta {fa}"
-                    f.write(task)
-        
+                task = f"\npython3 run_cutadapt_fastp.py --input {input_folder} --output {output_folder} -C 2 -U 12 -S {sample_name}"
+                f.write(task)
+
         ## Once all tasks have been added, finish up SBATCH template
         with open(output, "a") as f:
             f.write("\n)\neval ${tasks[$SLURM_ARRAY_TASK_ID]}")
@@ -94,6 +98,7 @@ def main(input_dir, email, slurm_acct, walltime, mem, fa):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = "Writes SBATCH script for adapter trimming.")
     parser.add_argument("--input_folder", help = "Name of folder (NOT DIRECTORY) containing all raw FASTQs", required = True)
+    parser.add_argument("--output_folder", required = True)
     parser.add_argument("--email", default = "<uniqname>@umich.edu")
     parser.add_argument("--slurm_acct", default = "<account>")
     parser.add_argument("--walltime", required = True)
