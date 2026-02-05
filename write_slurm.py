@@ -78,7 +78,6 @@ def main(input_folder, output_folder, email, slurm_acct, walltime, mem, fa):
 
     try:
         for file in start_dir.iterdir():
-            ## Obtain all subfolder names in each folder within 'realignments'
             filename = str(file.stem)
             sample_name = "_".join(filename.split("_")[0:1])
 
