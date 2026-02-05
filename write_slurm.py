@@ -4,28 +4,30 @@ import traceback
 import argparse
 import textwrap
 
-def main(email, slurm_acct, walltime, mem, fa):
-    """
+def main(input_dir, email, slurm_acct, walltime, mem, fa):
+    '''
     PURPOSE:
-    1. Goes into each sample group folder and obtains all subfolder names.
-    2. Automatically adds new task containing folder and subfolder names
-       to SBATCH script, allowing for BAM parallelization downstream 
-       (each subfolder = 1 BAM).
-    """
+    * Goes into folder containing all raw FASTQs and obtains all sample names.
+    * Automatically appends new task containing sample name to SBATCH script,
+      which then trims adapters for all raw FASTQs.
+    ---
+    EXAMPLE:
+    1. Given the file:
+        -> KEH-Rep1-7KO-HEK293T-Cyto-BS_S6_L001_R1_001.fastq.gz
+       We obtain the sample name:
+        -> KEH-Rep1-7KO-HEK293T-Cyto-BS_S6
+    2. We append the following task to the SBATCH script:
+       "python3 run_cutadapt_fastp.py --input raw_fastqs --output trimmed_reads \ 
+       -C 2 -U 12 -S KEH-Rep1-7KO-HEK293T-Cyto-BS_S6"
+    '''
     current_path = Path.cwd()
-    output = Path("run_calculate_dr.sbatch")
+    output = Path("SBATCHSubArr-CUT_FASTP.sbatch")
     
     start_dir = current_path/"realignments"
     if not start_dir.exists():
         raise FileNotFoundError(
             "Realignments folder doesn't exist. Did you run realignGap.py?"
         )
-
-    """
-    - Recursive count of directories = Number of jobs in array
-    - Subtract 1 so it's 0-based
-    """
-    num_jobs = len(list(start_dir).rglob("*/")) - 1
     
     ## Create SBATCH file if it doesn't exist
     if not output.exists():
@@ -90,7 +92,8 @@ def main(email, slurm_acct, walltime, mem, fa):
         raise
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description = "Writes SBATCH script for deletion rate calculation.")
+    parser = argparse.ArgumentParser(description = "Writes SBATCH script for adapter trimming.")
+    parser.add_argument("--input_folder", help = "Name of folder (NOT DIRECTORY) containing all raw FASTQs", required = True)
     parser.add_argument("--email", default = "<uniqname>@umich.edu")
     parser.add_argument("--slurm_acct", default = "<account>")
     parser.add_argument("--walltime", required = True)
