@@ -35,7 +35,7 @@ def main(input_folder: str, output_folder: str, email: str,
     1. Obtain all possible sample names
     2. Find total count, and subtract 1 so it's 0-based
     '''
-    sample_names = set(["_".join(fastq.stem.split("_")[0:2]) 
+    sample_names = set(["_".join(fastq.stem.split("_")[0]) 
                         for fastq in start_dir.glob("*.fastq.gz")])
     num_jobs = len(sample_names) - 1
     
