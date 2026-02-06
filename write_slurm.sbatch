@@ -4,8 +4,8 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --output=write_slurm_%u_%A_%a.out
 #SBATCH --account=cweidman99
-#SBATCH --time=10:00
-#SBATCH --mem=5000m
+#SBATCH --time=1:00
+#SBATCH --mem=200m
 #SBATCH --partition=standard
 #SBATCH --ntasks-per-node=1
 #SBATCH --nodes=1
