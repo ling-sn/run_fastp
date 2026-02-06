@@ -4,7 +4,7 @@ import traceback
 import argparse
 import textwrap
 
-def main(input_folder, output_folder, email, slurm_acct, walltime, mem, fa):
+def main(input_folder, output_folder, email, slurm_acct, walltime, mem):
     '''
     PURPOSE:
     * Goes into folder containing all raw FASTQs and obtains all sample names.
@@ -68,7 +68,7 @@ def main(input_folder, output_folder, email, slurm_acct, walltime, mem, fa):
                                             # This requires a conda environment with samtools and pysam (RNA-STAR)
                                             # 
                                             # To call this script:
-                                            # sbatch run_cutadapt_fastp.sbatch
+                                            # sbatch write_slurm.sbatch
                                             ################################################################################
 
                                             module purge
@@ -82,8 +82,7 @@ def main(input_folder, output_folder, email, slurm_acct, walltime, mem, fa):
 
     try:
         for fastq in start_dir.iterdir():
-            filename = str(fastq.stem)
-            sample_name = "_".join(filename.split("_")[0:2])
+            sample_name = "_".join(fastq.stem.split("_")[0:2])
 
             ## Append new tasks to SBATCH
             with open(output, "a") as f:
@@ -101,12 +100,11 @@ def main(input_folder, output_folder, email, slurm_acct, walltime, mem, fa):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = "Writes SBATCH script for adapter trimming.")
     parser.add_argument("--input_folder", help = "Name of folder (NOT DIRECTORY) containing all raw FASTQs", required = True)
-    parser.add_argument("--output_folder", required = True)
+    parser.add_argument("--output_folder", help = "Name of folder for desired output destination", required = True)
     parser.add_argument("--email", default = "<uniqname>@umich.edu")
     parser.add_argument("--slurm_acct", default = "<account>")
-    parser.add_argument("--walltime", required = True)
-    parser.add_argument("--mem", help = "Memory for job", required = True)
-    parser.add_argument("--fa", help = "Directory to FASTA file of reference genome", required = True)
+    parser.add_argument("--walltime", default = "<time>")
+    parser.add_argument("--mem", help = "Memory for job (in MB)", default = "<memory>")
 
     args = parser.parse_args()
 
