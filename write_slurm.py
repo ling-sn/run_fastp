@@ -84,7 +84,7 @@ def main(input_folder, output_folder, email, slurm_acct, walltime, mem):
         for name in sample_names:
             ## Append new tasks to SBATCH
             with open(output, "a") as f:
-                task = f"\npython3 run_cutadapt_fastp.py --input {input_folder} --output {output_folder} -C 2 -U 12 -S {name}"
+                task = f'\n"python3 run_cutadapt_fastp.py --input {input_folder} --output {output_folder} -C 2 -U 12 -S {name}"'
                 f.write(task)
 
         ## Once all tasks have been added, finish up SBATCH template
