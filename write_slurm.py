@@ -21,7 +21,7 @@ def main(input_folder, output_folder, email, slurm_acct, walltime, mem):
         -C 2 -U 12 -S KEH-Rep1-7KO-HEK293T-Cyto-BS_S6"
     '''
     current_path = Path.cwd()
-    output = Path("SBATCHSubArr-CUT_FASTP.sbatch")
+    output = current_path/"SBATCHSubArr-CUT_FASTP.sbatch"
     
     start_dir = Path(current_path/input_folder)
     if not start_dir.exists():
@@ -99,8 +99,8 @@ def main(input_folder, output_folder, email, slurm_acct, walltime, mem):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = "Writes SBATCH script for adapter trimming.")
-    parser.add_argument("--input_folder", help = "Name of folder (NOT DIRECTORY) containing all raw FASTQs", required = True)
-    parser.add_argument("--output_folder", help = "Name of folder for desired output destination", required = True)
+    parser.add_argument("--input_folder", help = "Name of folder containing all raw FASTQs (do not incl. directory)", required = True)
+    parser.add_argument("--output_folder", help = "Name of output folder for trimmed reads (after running run_cutadapt_fastp)", required = True)
     parser.add_argument("--email", default = "<uniqname>@umich.edu")
     parser.add_argument("--slurm_acct", default = "<account>")
     parser.add_argument("--walltime", default = "<time>")
