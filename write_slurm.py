@@ -4,7 +4,8 @@ import traceback
 import argparse
 import textwrap
 
-def main(input_folder, output_folder, email, slurm_acct, walltime, mem):
+def main(input_folder: str, output_folder: str, email: str, 
+         slurm_acct: str, walltime: int, mem: int):
     '''
     PURPOSE:
     * Goes into folder containing all raw FASTQs and obtains all sample names.
