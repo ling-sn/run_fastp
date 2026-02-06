@@ -21,7 +21,7 @@
 # For more info on #SBATCH variables, see https://arc.umich.edu/greatlakes/slurm-user-guide/
 # and https://slurm.schedmd.com/sbatch.html
 #
-# This requires a conda environment with samtools and pysam (RNA-STAR)
+# This requires the RNA-SEQ conda environment.
 # 
 # To call this script:
 # sbatch write_slurm.sbatch
