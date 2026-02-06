@@ -30,8 +30,12 @@ def main(input_folder, output_folder, email, slurm_acct, walltime, mem, fa):
             "in your current working directory."
         )
     
-    ## TODO: Obtain all unique sample names
-    num_jobs = count - 1
+    '''
+    1. Obtain all possible sample names
+    2. Find total count, and subtract 1 so it's 0-based
+    '''
+    all_files = ["_".join(fastq.stem.split("_")[0:2]) for fastq in start_dir.glob("*.fastq.gz")]
+    num_jobs = len(set(all_files)) - 1
     
     ## Create SBATCH file if it doesn't exist
     if not output.exists():
@@ -77,9 +81,9 @@ def main(input_folder, output_folder, email, slurm_acct, walltime, mem, fa):
             f.write(template_start)
 
     try:
-        for file in start_dir.iterdir():
-            filename = str(file.stem)
-            sample_name = "_".join(filename.split("_")[0:1])
+        for fastq in start_dir.iterdir():
+            filename = str(fastq.stem)
+            sample_name = "_".join(filename.split("_")[0:2])
 
             ## Append new tasks to SBATCH
             with open(output, "a") as f:
