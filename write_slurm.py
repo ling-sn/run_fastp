@@ -34,8 +34,8 @@ def main(input_folder, output_folder, email, slurm_acct, walltime, mem):
     1. Obtain all possible sample names
     2. Find total count, and subtract 1 so it's 0-based
     '''
-    all_files = ["_".join(fastq.stem.split("_")[0:2]) for fastq in start_dir.glob("*.fastq.gz")]
-    num_jobs = len(set(all_files)) - 1
+    sample_names = set(["_".join(fastq.stem.split("_")[0:2]) for fastq in start_dir.glob("*.fastq.gz")])
+    num_jobs = len(sample_names) - 1
     
     ## Create SBATCH file if it doesn't exist
     if not output.exists():
@@ -81,12 +81,10 @@ def main(input_folder, output_folder, email, slurm_acct, walltime, mem):
             f.write(template_start)
 
     try:
-        for fastq in start_dir.iterdir():
-            sample_name = "_".join(fastq.stem.split("_")[0:2])
-
+        for name in sample_names:
             ## Append new tasks to SBATCH
             with open(output, "a") as f:
-                task = f"\npython3 run_cutadapt_fastp.py --input {input_folder} --output {output_folder} -C 2 -U 12 -S {sample_name}"
+                task = f"\npython3 run_cutadapt_fastp.py --input {input_folder} --output {output_folder} -C 2 -U 12 -S {name}"
                 f.write(task)
 
         ## Once all tasks have been added, finish up SBATCH template
