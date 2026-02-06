@@ -109,5 +109,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     print("Writing SBATCH script...")
-    main(args.email, args.slurm_acct, args.walltime, args.mem, args.fa)
+    main(args.input_folder, args.output_folder,
+         args.email, args.slurm_acct, 
+         args.walltime, args.mem)
     print("Process finished.")
