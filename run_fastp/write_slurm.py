@@ -27,7 +27,7 @@ def main(input_folder: str, output_folder: str, email: str,
     start_dir = Path(current_path/input_folder)
     if not start_dir.exists():
         raise FileNotFoundError(
-            "Please input a folder name that exists"
+            "Please input a folder name that exists "
             "in your current working directory."
         )
     
