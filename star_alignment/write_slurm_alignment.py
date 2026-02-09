@@ -75,7 +75,7 @@ def main(input_folder: str, output_folder: str, aligner_type: str,
             f.write(template_start)
 
     try:
-        for subfolder in start_dir:
+        for subfolder in start_dir.iterdir():
             if subfolder.is_dir():
                 ## Append new tasks to SBATCH
                 sample_name = str(subfolder.stem)
