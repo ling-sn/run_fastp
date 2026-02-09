@@ -75,7 +75,7 @@ def main(input_folder: str, output_folder: str, aligner_type: str,
                 sample_name = str(subfolder.stem)
                 with open(output, "a") as f:
                     task = (f'\n"python3 -u run_align.py --input {input_folder} --output {output_folder} '
-                            f'--aligner {aligner_type} --index {genome_idx}'
+                            f'--aligner {aligner_type} --index {genome_idx} '
                             f'-C 8 -L {library} -S {sample_name}')
                     
                     if (filter_idx):
