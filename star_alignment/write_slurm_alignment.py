@@ -62,7 +62,7 @@ def main(input_folder: str, output_folder: str, aligner_type: str,
                                             # This requires a conda environment with samtools and pysam (RNA-STAR)
                                             # 
                                             # To call this script:
-                                            # sbatch write_slurm.sbatch
+                                            # sbatch SBATCHSubArr-Align-STAR.sbatch
                                             ################################################################################
 
                                             module purge
