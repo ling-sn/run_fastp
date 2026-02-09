@@ -30,7 +30,7 @@ def main(input_folder: str, output_folder: str, aligner_type: str,
     1. Count all subfolders in start_dir
     2. Subtract 1 so count is 0-based
     '''
-    num_jobs = len(os.walk(start_dir).next()[1]) - 1
+    num_jobs = len(next(os.walk(start_dir))[1]) - 1
     
     ## Create SBATCH file if it doesn't exist
     if not output.exists():
