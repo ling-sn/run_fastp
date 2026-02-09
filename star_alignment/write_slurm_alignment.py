@@ -50,16 +50,10 @@ def main(input_folder: str, output_folder: str, aligner_type: str,
                                             ################################################################################
                                             # Edit the strings under 'declare -a tasks=(' to match your experiments.
                                             #
-                                            # The #SBATCH --array variable above creates an array [0,1,2,3]. Change it so that the length
-                                            # is how many jobs you need (same as number of strings under $tasks).
+                                            # Recommend 1.5 hours per 30M read sample, 2.5 for 2-pass STAR.
                                             #
-                                            # This script is submitted that many times, but only one line from $tasks is
-                                            # evaluated each time.
-                                            #
-                                            # For more info on #SBATCH variables, see https://arc.umich.edu/greatlakes/slurm-user-guide/
-                                            # and https://slurm.schedmd.com/sbatch.html
-                                            #
-                                            # This requires a conda environment with samtools and pysam (RNA-STAR)
+                                            # This requires a conda environment for genome alignment, edit to your named
+                                            # version in the activate command.
                                             # 
                                             # To call this script:
                                             # sbatch SBATCHSubArr-Align-STAR.sbatch
