@@ -103,8 +103,8 @@ if __name__ == "__main__":
     parser.add_argument("--output_folder", help = "Name of output folder for aligned reads (after running run_align)", 
                         default = "star_aligned")
     parser.add_argument("--aligner_type", help = "Specify aligner type", choices = ["hisat2", "star"], required = True)
-    parser.add_argument("--genome_idx", help = "Directory to genome index (may include ~)", required = True)
-    parser.add_argument("--filter_idx", help = "Directory to contaminants index (may include ~)")
+    parser.add_argument("--genome_idx", help = "Directory to genome index", required = True)
+    parser.add_argument("--filter_idx", help = "Directory to contaminants index, including prefix of index (e.g., everything up to .1.bt2)")
     parser.add_argument("--library", help = "Specify which strand is on Read 1. Default is unstranded, but NEBNext needs RF",
                         choices = ["RF", "FR", "unstranded"], required = True)
     parser.add_argument("--two_pass", action = "store_true")
